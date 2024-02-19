@@ -1,22 +1,41 @@
 package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 @RequestMapping("/subjects")
 public class SubjectController {
-    public static Logger logger = LoggerFactory.getLogger(SubjectController.class);
     @Autowired
     private SubjectRepository subjectRepository;
 
     @GetMapping()
     public List<Subject> getAllSubject(){
         return subjectRepository.findAll();
+    }
+
+    @PostMapping("/")
+    public Subject createSubject(@RequestBody Subject subject) {
+        return subjectRepository.save(subject);
+    }
+
+    @PutMapping("/{id}")
+    public Subject updateSubject(@PathVariable Long id, @RequestBody Subject newSubject) {
+        return subjectRepository.findById(id)
+                .map(subject -> {
+                    subject.setName(newSubject.getName());
+                    subject.setHours(newSubject.getHours());
+                    return subjectRepository.save(subject);
+                })
+                .orElseGet(() -> {
+                    newSubject.setId(id);
+                    return subjectRepository.save(newSubject);
+                });
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteSubject(@PathVariable Long id) {
+        subjectRepository.deleteById(id);
     }
 }
