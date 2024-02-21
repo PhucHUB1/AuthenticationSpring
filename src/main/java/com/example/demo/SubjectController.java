@@ -8,11 +8,13 @@ import java.util.List;
 @RequestMapping("/subjects")
 public class SubjectController {
     @Autowired
+    private SubjectService service;
+    @Autowired
     private SubjectRepository subjectRepository;
 
     @GetMapping()
-    public List<Subject> getAllSubject(){
-        return subjectRepository.findAll();
+    public List<Subject> getAllSubject(@RequestParam(required = false) String name,@RequestParam(required = false) Integer hours){
+        return service.filterSubject(name,hours);
     }
 
     @PostMapping("/")
