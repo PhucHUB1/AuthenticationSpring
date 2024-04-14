@@ -1,21 +1,32 @@
 package com.example.demo_spring.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
     private String password;
+
+    private String role;
+
+    public String getRole() {
+        return role;
+    }
+
+    public User setRole(String role) {
+        this.role = role;
+        return this;
+    }
 
     public Long getId() {
         return id;
@@ -36,7 +47,8 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        GrantedAuthority authority = new SimpleGrantedAuthority(this.getRole());
+        return List.of(authority);
     }
 
     public String getPassword() {

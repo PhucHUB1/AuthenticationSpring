@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,6 +21,8 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalAuthentication
+@EnableMethodSecurity
 public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -38,6 +42,7 @@ public class SecurityConfiguration {
                         authorizationManagerRequestMatcherRegistry
                                 .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
                                 .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+//                                .requestMatchers("/profile/**").hasAnyRole("ADMIN")
                                 .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/auth/**").permitAll()
                                 .anyRequest().authenticated())
